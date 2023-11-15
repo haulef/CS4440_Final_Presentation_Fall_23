@@ -26,31 +26,25 @@ class RoundRobin:
     # done. If it is greater than the quantum time, it will run for the 
     # quantum time seconds.
     def run(self) -> None:
-        pDone = 0 # number of processes that are done
-        i = 0 # used to index the list of processes
-        
-        while pDone < len(self.processes):
-            process = self.processes[i % len(self.processes)]
-            if process.isDone:
-                i += 1
-                continue
+        while len(self.processes) > 0:
+            process = self.processes.pop(0)
             
             print(f'Process: {process.name} Switched In!')
 
             if process.burstTime <= self.qtime:
                 print(f'Process: {process.name} is running for {process.burstTime}')
                 time.sleep(1*process.burstTime)
-                process.isDone = True
-                pDone += 1
                 process.burstTime = 0
+                process.isDone = True
                 print(f'Process: {process.name} is Done!')
             else:
                 print(f'Process: {process.name} is running for {self.qtime}')
                 time.sleep(1*self.qtime)
                 process.burstTime = process.burstTime - self.qtime
+                self.processes.append(process)
             
             print(f'Process: {process.name} Switched Out!')
-            i += 1
+            
 
 
 def main():
@@ -59,10 +53,14 @@ def main():
     #              MyProcess('P5', 17, 0), MyProcess('P6', 8, 0),
     #              MyProcess('P7', 16, 0)]
 
-    processes = [MyProcess('P1', 24, 0), MyProcess('P2', 3, 0), 
-                 MyProcess('P3', 3, 0)]
+    # processes = [MyProcess('P1', 24, 0), MyProcess('P2', 3, 0), 
+    #              MyProcess('P3', 3, 0)]
 
-    roundRobin = RoundRobin(processes, 4)
+    processes = [MyProcess('P1', 10, 0), MyProcess('P2', 5, 0), 
+                 MyProcess('P3', 2, 0), MyProcess('P4', 24, 0),
+                 MyProcess('P5', 7, 0), MyProcess('P6', 5, 0)]
+
+    roundRobin = RoundRobin(processes, 5)
     roundRobin.run()
 
 
