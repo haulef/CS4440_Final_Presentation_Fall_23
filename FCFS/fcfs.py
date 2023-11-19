@@ -1,74 +1,74 @@
 from tabulate import tabulate
+import time
 
 
 class Process:
-    def __init__(self, process_id: int, burst_time: int):
+    def __init__(self, process_id: str, burst_time: int):
         self.process_id = process_id
         self.burst_time = burst_time
 
-    def __str__(self):
-        return f"P{self.process_id}\nburst_time: {self.burst_time}"
 
-
-class Queue:
+class fcfs_queue:
     def __init__(self):
-        self.processes = []
+        self.queue = []
 
     # adds element to the list
     def add(self, process: Process):
-        self.processes.append(process)
+        self.queue.append(process)
 
     # returns queue list
     def getQueueList(self) -> list:
-        return self.processes
+        return self.queue
 
-    # returns element of the queue using index
-    def getProcess(self, index: int) -> Process:
-        return self.processes[index]
+    # will run the cpu scheduling
+    def run(self):
+        # Access element of queue list using for loop
+        for process in self.queue:
+            # print out the process_id and burst_time
+            print(
+                f"Process: {process.process_id} is running for {process.burst_time} seconds"
+            )
+            # wait time will correspond to process burst_time in seconds
+            time.sleep(process.burst_time)
+            print(f"{process.process_id} is done!")
 
-    def __str__(self) -> str:
-        if not self.processes:
+        print("All process are complete")
+        self.show_table()
+
+    def show_table(self):
+        if not self.queue:
             return "No Processes on queue"
+        # intial header for table
+        # each tuple represents a row
+        data = [("Process", "Burst Time (sec)", "Waiting Time (sec)")]
+        waiting_time = 0
 
-        return f"{len(self.processes)} process on queue..."
+        # iterate thru list of process
+        for process in self.queue:
+            # add current process, burst_time, waiting_time and turnaround_time
+            data.append((process.process_id, process.burst_time, waiting_time))
 
+            # add current wait_time to calculate total
+            # Previous: P1 waiting time -> 25 <- P2 start time
+            waiting_time += process.burst_time
 
-def run(processes):
-    # intial header for table
-    # each tuple represents a row
-    data = [("Process", "Burst Time (sec)", "Waiting Time", "Turnaround Time")]
-    waiting_time = 0
-    turnaround_time = 0
+        # caculate average_waiting_time, average_turnaround_time using sum of waiting_time, turnaround_time
+        average_waiting_time = waiting_time / len(self.getQueueList())
 
-    # iterate thru list of process
-    for process in processes:
-        turnaround_time += waiting_time + process.burst_time
-        # add current process, burst_time, waiting_time and turnaround_time
-        data.append(
-            (process.process_id, process.burst_time, waiting_time, turnaround_time)
-        )
+        # using tabulate library and list of all the process_id, burst_time, wait time and turnaround time
+        print(tabulate(data, tablefmt="simple"))
 
-        # add current wait_time to calculate total
-        # Previous: P1 waiting time -> 25 <- P2 start time
-        waiting_time += process.burst_time
-
-    # caculate average_waiting_time, average_turnaround_time using sum of waiting_time, turnaround_time
-    average_waiting_time = waiting_time / len(processes)
-    average_turnaround_time = turnaround_time / len(processes)
-
-    # using tabulate library and list of all the process_id, burst_time, wait time and turnaround time
-    print(tabulate(data, tablefmt="simple"))
-
-    # print average and total time
-    print(f"\nAverage Waiting Time: {average_waiting_time}")
-    print(f"Average Turnaround Time: {average_turnaround_time}")
-    print(f"Total Time: {waiting_time}")
+        # print average and total time
+        print(f"\nAverage Waiting Time: {average_waiting_time} seconds")
+        print(f"Total Time: {waiting_time} seconds")
 
 
+""""
 if __name__ == "__main__":
-    process_queue = Queue()
-    process_queue.add(Process(1, 25))
-    process_queue.add(Process(2, 10))
-    process_queue.add(Process(3, 15))
+    process_queue = fcfs_queue()
+    process_queue.add(Process("P1", 5))
+    process_queue.add(Process("P2", 6))
+    process_queue.add(Process("P3", 8))
 
-    run(process_queue.getQueueList())
+    process_queue.run()
+"""
