@@ -1,4 +1,4 @@
-from tabulate import tabulate
+# from tabulate import tabulate
 from Process import Process
 import time
 
@@ -20,7 +20,8 @@ class fcfs_queue:
     # will run the cpu scheduling
     def run(self):
         # Access element of queue list using for loop
-        for process in self.queue:
+        while len(self.queue) > 0:
+            process = self.queue.pop(0)
             # print out the id and burst_time
             print(
                 f"Process: {process.id} is running for {process.burst_time} seconds"
@@ -53,7 +54,9 @@ class fcfs_queue:
         average_waiting_time = waiting_time / len(self.getQueueList())
 
         # using tabulate library and list of all the id, burst_time, wait time and turnaround time
+        """don't need
         print(tabulate(data, tablefmt="simple"))
+        """
 
         # print average and total time
         print(f"\nAverage Waiting Time: {average_waiting_time} seconds")
