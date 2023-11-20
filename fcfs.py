@@ -1,11 +1,7 @@
 from tabulate import tabulate
+from Process import Process
 import time
 
-
-class Process:
-    def __init__(self, process_id: str, burst_time: int):
-        self.process_id = process_id
-        self.burst_time = burst_time
 
 
 class fcfs_queue:
@@ -13,8 +9,9 @@ class fcfs_queue:
         self.queue = []
 
     # adds element to the list
-    def add(self, process: Process):
-        self.queue.append(process)
+    def add(self, p_list):
+        for p in p_list:
+            self.queue.append(p)
 
     # returns queue list
     def getQueueList(self) -> list:
@@ -24,13 +21,13 @@ class fcfs_queue:
     def run(self):
         # Access element of queue list using for loop
         for process in self.queue:
-            # print out the process_id and burst_time
+            # print out the id and burst_time
             print(
-                f"Process: {process.process_id} is running for {process.burst_time} seconds"
+                f"Process: {process.id} is running for {process.burst_time} seconds"
             )
             # wait time will correspond to process burst_time in seconds
             time.sleep(process.burst_time)
-            print(f"{process.process_id} is done!")
+            print(f"{process.id} is done!")
 
         print("All process are complete")
         self.show_table()
@@ -46,7 +43,7 @@ class fcfs_queue:
         # iterate thru list of process
         for process in self.queue:
             # add current process, burst_time, waiting_time and turnaround_time
-            data.append((process.process_id, process.burst_time, waiting_time))
+            data.append((process.id, process.burst_time, waiting_time))
 
             # add current wait_time to calculate total
             # Previous: P1 waiting time -> 25 <- P2 start time
@@ -55,7 +52,7 @@ class fcfs_queue:
         # caculate average_waiting_time, average_turnaround_time using sum of waiting_time, turnaround_time
         average_waiting_time = waiting_time / len(self.getQueueList())
 
-        # using tabulate library and list of all the process_id, burst_time, wait time and turnaround time
+        # using tabulate library and list of all the id, burst_time, wait time and turnaround time
         print(tabulate(data, tablefmt="simple"))
 
         # print average and total time
